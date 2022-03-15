@@ -1,4 +1,9 @@
 const mqtt = require('mqtt')
+
+const topics = { 
+  initTopic: "init"
+}
+
 const options = {
   // Clean session
   clean: true,
@@ -9,22 +14,40 @@ const options = {
 }
 const client  = mqtt.connect('mqtt://localhost:1883', options)
 
-client.on('connect', function () {
-  console.log('Connected')
-  client.subscribe('test', function (err) {
+function listenForNewDevices(topic){
+  client.subscribe(topic, function (err) {
     if (!err) {
-      client.publish('test', 'Hello mqtt')
+      console.log("Listening for new Devices...")
     }
-
     if(err){
         console.log(err)
     }
 
   })
+}
+
+function handleNewDevice(message){
+  const newDeviceSettings = JSON.parse(message)
+  console.log(newDeviceSettings)
+}
+
+function handleMessges(topic, message){
+
+  if(topic == topics.initTopic){
+    handleNewDevice(message)
+  }
+  
+}
+
+
+client.on('connect', function () {
+  console.log('Connected')
+  listenForNewDevices(topics.initTopic)
 })
 
 client.on('message', function (topic, message) {
-  // message is Buffer
-  console.log(message.toString())
+
+  handleMessges(topic, message)
+
 })
 
