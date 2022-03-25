@@ -1,0 +1,18 @@
+{
+    "devices":[
+        {
+            "name":"listener1",
+            "activators":[
+                "activator1"
+            ]
+        },
+    
+        {
+            "name":"listener2",
+            "activators":[
+                "activator1"
+            ]
+        }
+    ]
+
+}
